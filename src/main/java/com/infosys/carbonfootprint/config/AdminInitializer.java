@@ -13,8 +13,8 @@ public class AdminInitializer {
 
     @Bean
     CommandLineRunner createAdmin(
-        UserRepository userRepository,
-        PasswordEncoder passwordEncoder) {
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
 
         return args -> {
 
@@ -25,7 +25,7 @@ public class AdminInitializer {
                 admin.setUsername("admin");
                 admin.setEmail("admin@carbon.com");
                 admin.setPassword(
-                    passwordEncoder.encode("Admin@12345")
+                        passwordEncoder.encode("Admin@12345")
                 );
                 admin.setRole("ADMIN");
                 admin.setStatus("APPROVED");

@@ -1,9 +1,10 @@
 package com.infosys.carbonfootprint.service;
 
-public interface EmailService {
+public interface  EmailService {
 
-    void sendAccountCredentials(
-        String email,
+    void sendApprovalEmail(
+        String toEmail,
         String username,
-        String temporaryPassword);
+        String temporaryPassword
+    );
 }

@@ -212,7 +212,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        emailService.sendAccountCredentials(
+        emailService.sendApprovalEmail(
             user.getEmail(),
             username,
             temporaryPassword

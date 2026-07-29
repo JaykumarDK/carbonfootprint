@@ -12,4 +12,6 @@ public interface PersonalDetailsRepository
     Optional<PersonalDetails> findByUserUserId(Long userId);
 
     boolean existsByMobileNumber(String mobileNumber);
+    long countByGender(String gender);
 }
+

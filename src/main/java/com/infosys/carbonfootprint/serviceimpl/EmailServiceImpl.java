@@ -1,38 +1,56 @@
 package com.infosys.carbonfootprint.serviceimpl;
-
+//import com.infosys.carbonfootprint.exception.EmailSendingException;
+import com.infosys.carbonfootprint.exception.EmailSendingException;
+import com.infosys.carbonfootprint.service.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.infosys.carbonfootprint.service.EmailService;
-
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    private final JavaMailSender mailSender;
-
-    public EmailServiceImpl(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
-    }
+    @Autowired
+    private JavaMailSender mailSender;
 
     @Override
-    public void sendAccountCredentials(
-        String email,
+    public void sendApprovalEmail(
+        String toEmail,
         String username,
         String temporaryPassword) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
+        try {
 
-        message.setTo(email);
-        message.setSubject("Carbon Footprint Monitoring - Account Approved");
+            SimpleMailMessage message =
+                new SimpleMailMessage();
 
-        message.setText(
-            "Your registration has been approved.\n\n"
-                + "Username: " + username + "\n"
-                + "Temporary Password: " + temporaryPassword + "\n\n"
-                + "Please change your password after your first login."
-        );
+            message.setTo(toEmail);
 
-        mailSender.send(message);
+            message.setSubject(
+                "Carbon Footprint Portal - Account Approved"
+            );
+
+            message.setText(
+                "Dear User,\n\n" +
+                    "Your account has been approved.\n\n" +
+
+                    "Username: " + username + "\n" +
+                    "Temporary Password: " + temporaryPassword + "\n\n" +
+
+                    "Please change your password after first login.\n\n" +
+
+                    "Regards,\n" +
+                    "Carbon Footprint Team"
+            );
+
+            mailSender.send(message);
+
+        } catch (Exception e) {
+
+            throw new EmailSendingException(
+                "Failed to send approval email",
+                e
+            );
+        }
     }
 }

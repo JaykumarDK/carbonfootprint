@@ -1,51 +1,117 @@
 package com.infosys.carbonfootprint.controller;
 
+import com.infosys.carbonfootprint.dto.AdminStatsDto;
+import com.infosys.carbonfootprint.dto.PendingUserDto;
+import com.infosys.carbonfootprint.dto.UserDetailsToAdminDto;
+import com.infosys.carbonfootprint.service.AdminService;
+import com.infosys.carbonfootprint.service.AdminStatsService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.infosys.carbonfootprint.entity.User;
-import com.infosys.carbonfootprint.service.UserService;
 
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
 
-    private final UserService userService;
 
-    public AdminController(UserService userService) {
-        this.userService = userService;
+    @Autowired
+    private AdminService adminService;
+
+
+    @Autowired
+    private AdminStatsService adminStatsService;
+
+
+
+
+    @GetMapping("/dashboard")
+    public String dashboard(){
+
+        return "Dashboard Test";
+
     }
+
+
+
 
     @GetMapping("/pending-users")
-    public ResponseEntity<List<User>> getPendingUsers() {
+    public List<PendingUserDto> getPendingUsers(){
 
-        return ResponseEntity.ok(
-            userService.getPendingUsers()
-        );
+        return adminService.getPendingUsers();
 
     }
 
-    @PatchMapping("/users/{userId}/approve")
-    public ResponseEntity<String> approveUser(
-        @PathVariable Long userId) {
+    @GetMapping("/user-details/{id}")
+    public UserDetailsToAdminDto getUserDetails(
+        @PathVariable Long id){
 
-        return ResponseEntity.ok(
-            userService.approveUser(userId)
-        );
+        return adminService.getUserDetails(id);
+
     }
 
-    @PatchMapping("/users/{userId}/reject")
-    public ResponseEntity<String> rejectUser(
-        @PathVariable Long userId) {
 
-        return ResponseEntity.ok(
-            userService.rejectUser(userId)
-        );
+
+
+    @PostMapping("/approve-user/{id}")
+    public String approveUser(
+        @PathVariable Long id){
+
+        return adminService.approveUser(id);
+
     }
+
+
+
+
+    @PostMapping("/reject-user/{id}")
+    public String rejectUser(
+        @PathVariable Long id){
+
+        return adminService.rejectUser(id);
+
+    }
+
+
+
+
+    @GetMapping("/approved-users")
+    public List<PendingUserDto> getApprovedUsers(){
+
+        return adminService.getApprovedUsers();
+
+    }
+
+
+
+
+    @GetMapping("/rejected-users")
+    public List<PendingUserDto> getRejectedUsers(){
+
+        return adminService.getRejectedUsers();
+
+    }
+
+
+
+
+    @GetMapping("/statistics")
+    public AdminStatsDto getStatistics(){
+
+        return adminStatsService.getStatistics();
+
+    }
+
+
+
+
+    @PostMapping("/logout")
+    public String logout(){
+
+        return "Admin Logout Successfully";
+
+    }
+
 }
