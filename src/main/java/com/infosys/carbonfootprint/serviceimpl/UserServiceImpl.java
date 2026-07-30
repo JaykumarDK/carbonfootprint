@@ -66,13 +66,6 @@ public class UserServiceImpl implements UserService {
             );
         }
 
-        if (governmentDocumentRepository.existsByDocumentNumber(
-            documentDTO.getDocumentNumber())) {
-
-            throw new IllegalArgumentException(
-                "Government document number is already registered"
-            );
-        }
 
         User user = new User();
 
@@ -158,10 +151,6 @@ public class UserServiceImpl implements UserService {
 
         governmentDocument.setDocumentType(
             dto.getDocumentType()
-        );
-
-        governmentDocument.setDocumentNumber(
-            dto.getDocumentNumber()
         );
 
         governmentDocument.setDocumentFile(

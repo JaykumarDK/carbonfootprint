@@ -4,10 +4,14 @@ import com.infosys.carbonfootprint.dto.AdminStatsDto;
 import com.infosys.carbonfootprint.dto.PendingUserDto;
 import com.infosys.carbonfootprint.dto.UserDetailsToAdminDto;
 import com.infosys.carbonfootprint.dto.UserListDto;
+import com.infosys.carbonfootprint.entity.UserGovernmentDocument;
 import com.infosys.carbonfootprint.service.AdminService;
 import com.infosys.carbonfootprint.service.AdminStatsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,6 +72,31 @@ public class AdminController {
         return adminStatsService.getStatistics();
     }
 
+    @GetMapping("/users/{userId}/document")
+    public ResponseEntity<byte[]> viewGovernmentDocument(
+            @PathVariable Long userId) {
+
+        UserGovernmentDocument document =
+                adminService.getGovernmentDocument(userId);
+
+        MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
+
+        String type = document.getDocumentType();
+
+        if ("PDF".equalsIgnoreCase(type)) {
+            mediaType = MediaType.APPLICATION_PDF;
+        } else if ("PNG".equalsIgnoreCase(type)) {
+            mediaType = MediaType.IMAGE_PNG;
+        } else if ("JPG".equalsIgnoreCase(type)
+                || "JPEG".equalsIgnoreCase(type)) {
+            mediaType = MediaType.IMAGE_JPEG;
+        }
+
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
+                .body(document.getDocumentFile());
+    }
     @PostMapping("/logout")
     public String logout(){
         return "Admin Logout Successfully";

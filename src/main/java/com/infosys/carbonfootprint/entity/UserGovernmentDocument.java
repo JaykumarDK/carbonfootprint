@@ -26,9 +26,6 @@ public class UserGovernmentDocument {
     @Column(name = "document_type", nullable = false, length = 30)
     private String documentType;
 
-    @Column(name = "document_number", nullable = false, unique = true, length = 50)
-    private String documentNumber;
-
     @Column(name = "document_file", nullable = false, columnDefinition = "BYTEA")
     private byte[] documentFile;
 
@@ -44,6 +41,7 @@ public class UserGovernmentDocument {
     }
 
     public User getUser() {
+
         return user;
     }
 
@@ -57,14 +55,6 @@ public class UserGovernmentDocument {
 
     public void setDocumentType(String documentType) {
         this.documentType = documentType;
-    }
-
-    public String getDocumentNumber() {
-        return documentNumber;
-    }
-
-    public void setDocumentNumber(String documentNumber) {
-        this.documentNumber = documentNumber;
     }
 
     public byte[] getDocumentFile() {

@@ -16,23 +16,21 @@ public class PendingUserDto {
 
     private Long governmentDocumentId;
     private String documentType;
-    private String documentNumber;
 
     public PendingUserDto() {
     }
 
     public PendingUserDto(
-        Long userId,
-        String firstName,
-        String middleName,
-        String lastName,
-        Integer age,
-        String gender,
-        String email,
-        String status,
-        Long governmentDocumentId,
-        String documentType,
-        String documentNumber) {
+            Long userId,
+            String firstName,
+            String middleName,
+            String lastName,
+            Integer age,
+            String s, String gender,
+            String email,
+            String status,
+            Long governmentDocumentId,
+            String documentType) {
 
         this.userId = userId;
         this.firstName = firstName;
@@ -44,7 +42,6 @@ public class PendingUserDto {
         this.status = status;
         this.governmentDocumentId = governmentDocumentId;
         this.documentType = documentType;
-        this.documentNumber = documentNumber;
     }
 
     public Long getUserId() {
@@ -127,11 +124,5 @@ public class PendingUserDto {
         this.documentType = documentType;
     }
 
-    public String getDocumentNumber() {
-        return documentNumber;
     }
 
-    public void setDocumentNumber(String documentNumber) {
-        this.documentNumber = documentNumber;
-    }
-}

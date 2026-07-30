@@ -1,5 +1,6 @@
 package com.infosys.carbonfootprint.serviceimpl;
 import com.infosys.carbonfootprint.dto.UserListDto;
+import com.infosys.carbonfootprint.exception.ResourceNotFoundException;
 import com.infosys.carbonfootprint.service.EmailService;
 import com.infosys.carbonfootprint.dto.PendingUserDto;
 import com.infosys.carbonfootprint.dto.UserDetailsToAdminDto;
@@ -12,7 +13,6 @@ import com.infosys.carbonfootprint.repository.UserAddressRepository;
 import com.infosys.carbonfootprint.repository.UserGovernmentDocumentRepository;
 import com.infosys.carbonfootprint.repository.UserRepository;
 import com.infosys.carbonfootprint.service.AdminService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.ArrayList;
@@ -107,12 +107,11 @@ public class AdminServiceImpl implements AdminService {
                     personal != null ? personal.getMiddleName() : null,
                     personal != null ? personal.getLastName() : null,
                     personal != null ? personal.getAge() : null,
-                    personal != null ? personal.getGender() : null,
+                        personal != null ? personal.getGender() : null, personal != null ? personal.getGender() : null,
                     user.getEmail(),
                     user.getStatus(),
                     document != null ? document.getGovernmentDocumentId() : null,
-                    document != null ? document.getDocumentType() : null,
-                    document != null ? document.getDocumentNumber() : null
+                    document != null ? document.getDocumentType() : null
                 );
             })
             .toList();
@@ -191,8 +190,6 @@ public class AdminServiceImpl implements AdminService {
             dto.setDocumentType(
                 document.getDocumentType());
 
-            dto.setDocumentNumber(
-                document.getDocumentNumber());
         }
 
         return dto;
@@ -304,5 +301,15 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return userList;
+    }
+
+    @Override
+    public UserGovernmentDocument getGovernmentDocument(Long userId) {
+
+        return governmentDocumentRepository
+                .findByUserUserId(userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Government document not found."));
     }
 }

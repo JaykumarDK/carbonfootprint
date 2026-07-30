@@ -11,5 +11,4 @@ public interface UserGovernmentDocumentRepository
 
     Optional<UserGovernmentDocument> findByUserUserId(Long userId);
 
-    boolean existsByDocumentNumber(String documentNumber);
-}
+    }
