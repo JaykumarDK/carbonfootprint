@@ -17,4 +17,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByStatus(String status);
     long countByStatus(String status);
+
 }

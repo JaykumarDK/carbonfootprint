@@ -1,4 +1,6 @@
 package com.infosys.carbonfootprint.serviceimpl;
+import com.infosys.carbonfootprint.exception.InvalidUserStatusException;
+import com.infosys.carbonfootprint.exception.ResourceNotFoundException;
 import com.infosys.carbonfootprint.service.EmailService;
 import com.infosys.carbonfootprint.dto.PendingUserDto;
 import com.infosys.carbonfootprint.dto.UserDetailsToAdminDto;
@@ -125,7 +127,10 @@ public class AdminServiceImpl implements AdminService {
             .orElse(null);
 
         if (user == null) {
-            return null;
+
+            throw new ResourceNotFoundException(
+                    "User not found with id " + id
+            );
         }
 
         PersonalDetails personal =
@@ -203,16 +208,27 @@ public class AdminServiceImpl implements AdminService {
             userRepository.findById(id);
 
         if(optionalUser.isEmpty()) {
-            return "User Not Found";
+
+            throw new ResourceNotFoundException(
+                    "User not found with id " + id
+            );
         }
 
+
         User user = optionalUser.get();
+        if (!"PENDING".equals(user.getStatus())) {
+
+            throw new InvalidUserStatusException(
+                    "Only pending users can be approved"
+            );
+        }
         String username =
             user.getEmail()
                 .split("@")[0]
                 +id;
         String temporaryPassword =
             "CarbonFootprint"+id+"123";
+
 
         String encryptedPassword = passwordEncoder.encode(temporaryPassword );
         user.setUsername(username);
@@ -238,23 +254,33 @@ public class AdminServiceImpl implements AdminService {
             + " Temporary Password: "
             + temporaryPassword;
     }
-
     @Override
     public String rejectUser(Long id) {
-        Optional<User> optionalUser =
-            userRepository.findById(id);
 
-        if(optionalUser.isEmpty()) {
-            return "User Not Found";
+        Optional<User> optionalUser =
+                userRepository.findById(id);
+
+        if (optionalUser.isEmpty()) {
+
+            throw new ResourceNotFoundException(
+                    "User not found with id " + id
+            );
         }
 
         User user = optionalUser.get();
+
+        if (!"PENDING".equals(user.getStatus())) {
+
+            throw new InvalidUserStatusException(
+                    "Only pending users can be rejected"
+            );
+        }
 
         user.setStatus("REJECTED");
 
         userRepository.save(user);
 
-        return "User Rejected";
+        return "User Rejected Successfully";
     }
 
     @Override
@@ -271,6 +297,13 @@ public class AdminServiceImpl implements AdminService {
         List<User> users =
             userRepository.findByStatus("REJECTED");
 
+
+        return convertToDto(users);
+    }
+    @Override
+    public List<PendingUserDto> getAllUsers() {
+
+        List<User> users = userRepository.findAll();
 
         return convertToDto(users);
     }

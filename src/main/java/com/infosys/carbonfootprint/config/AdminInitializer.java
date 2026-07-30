@@ -19,6 +19,7 @@ public class AdminInitializer {
         return args -> {
 
             if (userRepository.findByUsername("admin").isEmpty()) {
+                System.out.println("Creating admin user...");
 
                 User admin = new User();
 
@@ -30,8 +31,11 @@ public class AdminInitializer {
                 admin.setRole("ADMIN");
                 admin.setStatus("APPROVED");
                 admin.setFirstLogin(false);
-
+                System.out.println("Admin created successfully");
                 userRepository.save(admin);
+            }
+            else{
+                System.out.println("Admin already exists");
             }
         };
     }

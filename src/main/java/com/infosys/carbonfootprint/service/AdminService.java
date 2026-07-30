@@ -19,4 +19,6 @@ public interface AdminService {
 
     List<PendingUserDto> getRejectedUsers();
 
+    List<PendingUserDto> getAllUsers();
+
 }

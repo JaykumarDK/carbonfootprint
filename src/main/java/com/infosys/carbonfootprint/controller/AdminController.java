@@ -5,113 +5,73 @@ import com.infosys.carbonfootprint.dto.PendingUserDto;
 import com.infosys.carbonfootprint.dto.UserDetailsToAdminDto;
 import com.infosys.carbonfootprint.service.AdminService;
 import com.infosys.carbonfootprint.service.AdminStatsService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
 
-
     @Autowired
     private AdminService adminService;
-
 
     @Autowired
     private AdminStatsService adminStatsService;
 
-
-
-
     @GetMapping("/dashboard")
     public String dashboard(){
-
         return "Dashboard Test";
-
     }
-
-
-
 
     @GetMapping("/pending-users")
     public List<PendingUserDto> getPendingUsers(){
-
         return adminService.getPendingUsers();
-
     }
 
     @GetMapping("/user-details/{id}")
     public UserDetailsToAdminDto getUserDetails(
         @PathVariable Long id){
-
         return adminService.getUserDetails(id);
-
     }
-
-
-
 
     @PostMapping("/approve-user/{id}")
     public String approveUser(
         @PathVariable Long id){
-
         return adminService.approveUser(id);
-
     }
 
+    @GetMapping("/all-users")
+    public List<PendingUserDto> getAllUsers() {
+        return adminService.getAllUsers();
+    }
 
 
 
     @PostMapping("/reject-user/{id}")
     public String rejectUser(
         @PathVariable Long id){
-
         return adminService.rejectUser(id);
-
     }
-
-
-
 
     @GetMapping("/approved-users")
     public List<PendingUserDto> getApprovedUsers(){
-
         return adminService.getApprovedUsers();
-
     }
-
-
-
 
     @GetMapping("/rejected-users")
     public List<PendingUserDto> getRejectedUsers(){
-
         return adminService.getRejectedUsers();
-
     }
-
-
-
 
     @GetMapping("/statistics")
     public AdminStatsDto getStatistics(){
-
         return adminStatsService.getStatistics();
 
     }
 
-
-
-
     @PostMapping("/logout")
     public String logout(){
-
         return "Admin Logout Successfully";
-
     }
-
 }
