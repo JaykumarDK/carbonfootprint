@@ -2,6 +2,7 @@ package com.infosys.carbonfootprint.serviceimpl;
 
 import com.infosys.carbonfootprint.config.JwtUtil;
 import com.infosys.carbonfootprint.dto.PasswordResetDTO;
+import com.infosys.carbonfootprint.exception.UnauthorizedAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,32 +28,34 @@ public class AuthServiceImpl implements AuthService {
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
-
     @Override
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
 
         User user = userRepository
-            .findByUsername(loginRequestDTO.getUsername())
-            .orElseThrow(() ->
-                new IllegalArgumentException(
-                    "Invalid username or password"
-                )
-            );
+                .findByUsername(loginRequestDTO.getUsername())
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Invalid username or password"
+                        )
+                );
 
         if (!"APPROVED".equals(user.getStatus())) {
             throw new IllegalArgumentException(
-                "User account is not approved"
+                    "User account is not approved"
             );
         }
 
-        boolean passwordMatches = passwordEncoder.matches(
-            loginRequestDTO.getPassword(),
-            user.getPassword()
-        );
+        String generatedHash = passwordEncoder.encode(loginRequestDTO.getPassword());
+
+        boolean passwordMatches =
+                passwordEncoder.matches(
+                        loginRequestDTO.getPassword(),
+                        user.getPassword()
+                );
 
         if (!passwordMatches) {
-            throw new IllegalArgumentException(
-                "Invalid username or password"
+            throw new UnauthorizedAccessException(
+                    "Invalid username or password"
             );
         }
 
@@ -67,12 +70,12 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.generateToken(user);
 
         return new LoginResponseDTO(
-            user.getUserId(),
-            user.getUsername(),
-            user.getRole(),
-            user.getFirstLogin(),
-            token,
-            message
+                user.getUserId(),
+                user.getUsername(),
+                user.getRole(),
+                user.getFirstLogin(),
+                token,
+                message
         );
     }
 

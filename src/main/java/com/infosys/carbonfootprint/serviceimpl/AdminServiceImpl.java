@@ -1,4 +1,5 @@
 package com.infosys.carbonfootprint.serviceimpl;
+import com.infosys.carbonfootprint.dto.UserListDto;
 import com.infosys.carbonfootprint.service.EmailService;
 import com.infosys.carbonfootprint.dto.PendingUserDto;
 import com.infosys.carbonfootprint.dto.UserDetailsToAdminDto;
@@ -270,8 +271,38 @@ public class AdminServiceImpl implements AdminService {
     public List<PendingUserDto> getRejectedUsers() {
         List<User> users =
             userRepository.findByStatus("REJECTED");
-
-
         return convertToDto(users);
+    }
+
+    @Override
+    public List<UserListDto> getAllUsers() {
+
+        List<User> users = userRepository.findAll();
+
+        List<UserListDto> userList = new ArrayList<>();
+
+        for (User user : users) {
+
+            UserListDto dto = new UserListDto();
+
+            dto.setUserId(user.getUserId());
+            dto.setUsername(user.getUsername());
+            dto.setEmail(user.getEmail());
+            dto.setRole(user.getRole());
+            dto.setStatus(user.getStatus());
+
+            PersonalDetails personal = user.getPersonalDetails();
+
+            if (personal != null) {
+                dto.setFirstName(personal.getFirstName());
+                dto.setMiddleName(personal.getMiddleName());
+                dto.setLastName(personal.getLastName());
+                dto.setMobileNumber(personal.getMobileNumber());
+            }
+
+            userList.add(dto);
+        }
+
+        return userList;
     }
 }

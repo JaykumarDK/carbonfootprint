@@ -25,53 +25,48 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain)
-        throws ServletException, IOException {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
+            throws ServletException, IOException {
 
-        String authorizationHeader =
-            request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader == null
-            || !authorizationHeader.startsWith("Bearer ")) {
+                || !authorizationHeader.startsWith("Bearer ")) {
 
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authorizationHeader.substring(7);
+        String token = authorizationHeader.substring(7).trim();
 
         if (jwtUtil.isTokenValid(token)) {
 
-            String username =
-                jwtUtil.extractUsername(token);
-
-            String role =
-                jwtUtil.extractRole(token);
+            String username = jwtUtil.extractUsername(token);
+            String role = jwtUtil.extractRole(token);
 
             SimpleGrantedAuthority authority =
-                new SimpleGrantedAuthority(
-                    "ROLE_" + role
-                );
+                    new SimpleGrantedAuthority("ROLE_" + role);
 
             UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                    username,
-                    null,
-                    List.of(authority)
-                );
+                    new UsernamePasswordAuthenticationToken(
+                            username,
+                            null,
+                            List.of(authority)
+                    );
 
-            SecurityContextHolder
-                .getContext()
-                .setAuthentication(authentication);
+            SecurityContextHolder.getContext()
+                    .setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
-        String username = jwtUtil.extractUsername(token);
-        String role = jwtUtil.extractRole(token);
+    }
+
+        //filterChain.doFilter(request, response);
+
 
 
     }
 
-}
+

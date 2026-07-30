@@ -37,7 +37,6 @@ public class AuthController {
 
         String response =
             authService.resetPassword(passwordResetDTO);
-
         return ResponseEntity.ok(response);
     }
 }
